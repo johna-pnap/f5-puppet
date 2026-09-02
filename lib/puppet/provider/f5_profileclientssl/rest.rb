@@ -27,6 +27,7 @@ Puppet::Type.type(:f5_profileclientssl).provide(:rest, parent: Puppet::Provider:
         retain_certificate:          profile['retainCertificate'],
         authenticate_depth:          profile['authenticateDepth'],
         partition:                   profile['partition'],
+        defaults_from:               profile['defaultsFrom']
       )
     end
 
@@ -65,6 +66,7 @@ Puppet::Type.type(:f5_profileclientssl).provide(:rest, parent: Puppet::Provider:
       :'untrusted-cert-response-control'          => :untrustedCertResponseControl,
       :'retain-certificate'          => :retainCertificate,
       :'authenticate-depth'          => :authenticateDepth,
+      :'defaults-from'               => :defaultsFrom,
     }
 
     message = strip_nil_values(message)
@@ -79,7 +81,7 @@ Puppet::Type.type(:f5_profileclientssl).provide(:rest, parent: Puppet::Provider:
   def flush
     if @property_hash != {}
       full_path_uri = resource[:name].gsub('/','~')
-      result = Puppet::Provider::F5.put("/mgmt/tm/ltm/profile/client-ssl/#{full_path_uri}", message(resource))
+      result = Puppet::Provider::F5.patch("/mgmt/tm/ltm/profile/client-ssl/#{full_path_uri}", message(resource))
     end
     return result
   end

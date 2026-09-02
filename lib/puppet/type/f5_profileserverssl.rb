@@ -1,6 +1,7 @@
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/parameter/f5_name.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_description.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_truthy.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_name.rb'))
 
 
 Puppet::Type.newtype(:f5_profileserverssl) do
@@ -34,6 +35,12 @@ Puppet::Type.newtype(:f5_profileserverssl) do
  newproperty(:key) do
     desc "key"
   end
+
+ newproperty(:defaults_from, :parent => Puppet::Property::F5Name)
+ do
+   desc "Parent profile"
+   defaultto '/Common/serverssl'
+ end
 
   newproperty(:proxy_ssl, :parent => Puppet::Property::F5truthy) do
     desc "Valid values are 'enabled' or 'disabled'."

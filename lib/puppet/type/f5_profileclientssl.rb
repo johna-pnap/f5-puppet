@@ -7,6 +7,7 @@ require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/prop
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_health_monitors.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_ratio.rb'))
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_state.rb'))
+require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_name.rb'))
 
 require File.expand_path(File.join(File.dirname(__FILE__),'..','..','puppet/property/f5_truthy.rb'))
 
@@ -30,6 +31,11 @@ Puppet::Type.newtype(:f5_profileclientssl) do
 
   newproperty(:chain) do
     desc "chain"
+  end
+
+  newproperty(:defaults_from, :parent => Puppet::Property::F5Name) do
+    desc "Parent profile"
+    defaultto '/Common/clientssl'
   end
 
   newproperty(:proxy_ssl, :parent => Puppet::Property::F5truthy) do
