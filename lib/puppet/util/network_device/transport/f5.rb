@@ -7,7 +7,7 @@ class Puppet::Util::NetworkDevice::Transport::F5 < Puppet::Util::NetworkDevice::
 
   def initialize(url, _options = {})
     require 'faraday'
-    Puppet.warn("EVN is #{ENV.to_h.inspect}")
+    Puppet.warning("EVN is #{ENV.to_h.inspect}")
     @connection = Faraday.new(url: url, ssl: { verify: false })
   end
 
