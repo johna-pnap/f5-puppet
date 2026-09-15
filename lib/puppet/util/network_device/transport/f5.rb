@@ -7,7 +7,7 @@ class Puppet::Util::NetworkDevice::Transport::F5 < Puppet::Util::NetworkDevice::
 
   def initialize(url, _options = {})
     require 'faraday'
-    Puppet.warning("F5::Transport Initializing:  #{url} -- #{options}.")
+    Puppet.warning("F5::Transport Initializing:  #{url} -- #{_options}.")
     @connection = Faraday.new(url: url, ssl: { verify: false })
   end
 
