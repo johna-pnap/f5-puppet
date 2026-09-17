@@ -12,8 +12,8 @@ class Puppet::Util::NetworkDevice::Transport::F5 < Puppet::Util::NetworkDevice::
     if url.start_with?('vault+http://', 'vault+https://')
       creds = resolve_vault_creds(url)
       conn_uri = URI.parse(creds.fetch('url'))
-      conn_uri.user = URI.encode_www_form_component(credentials.fetch('username'))
-      conn_uri.password = URI.encode_www_form_component(credentials.fetch('password'))
+      conn_uri.user = URI.encode_www_form_component(creds.fetch('username'))
+      conn_uri.password = URI.encode_www_form_component(creds.fetch('password'))
       url = conn_uri.to_s
     end
     @connection = Faraday.new(url: url, ssl: { verify: false })
