@@ -19,7 +19,7 @@ class Puppet::Util::NetworkDevice::Transport::F5 < Puppet::Util::NetworkDevice::
     @connection = Faraday.new(url: url, ssl: { verify: false })
   end
 
-  def resolve_vault_creds(url):
+  def resolve_vault_creds(url)
     require 'faraday'
     require 'json'
     require 'uri'
