@@ -7,8 +7,40 @@ class Puppet::Util::NetworkDevice::Transport::F5 < Puppet::Util::NetworkDevice::
 
   def initialize(url, _options = {})
     require 'faraday'
-    Puppet.warning("EVN is #{ENV.to_h.inspect}")
+    require 'uri'
+
+    if url.start_with?('vault+http://', 'vault+https://')
+      creds = resolve_vault_creds(url)
+      conn_uri = URI.parse(creds.fetch('url'))
+      conn_uri.user = URI.encode_www_form_component(credentials.fetch('username'))
+      conn_uri.password = URI.encode_www_form_component(credentials.fetch('password'))
+      url = conn_uri.to_s
+    end
     @connection = Faraday.new(url: url, ssl: { verify: false })
+  end
+
+  def resolve_vault_creds(url):
+    require 'faraday'
+    require 'json'
+    require 'uri'
+
+    vault_uri = URI.parse(url.sub(/\Avault\+/, ''))
+    secret_path = vault_uri.path
+    vault_uri.path = ''
+    vault_uri.query = nil
+    vault_uri.fragment = nil
+
+    vault = Faraday.new(url: vault_uri.to_s)
+    response = vault.get("/v1#{secret_path}")
+    unless response.success?
+      fail("Unable to retrieve F5 credentials from Vault: HTTP #{response.status}")
+    end
+
+    begin
+      JSON.parse(response.body).fetch('data').fetch('data')
+    rescue JSON::ParserError, KeyError => e
+      fail("Invalid Vault credential response: #{e.message}")
+    end
   end
 
   def call(url, args={})
